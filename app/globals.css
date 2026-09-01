@@ -50,7 +50,8 @@ body {
 
 /* Product Card */
 .product-card {
-  @apply group relative overflow-hidden rounded-lg bg-charcoal/50 backdrop-blur-sm border border-slate/20 transition-smooth;
+  /* 'group' is a variant utility and cannot be used with @apply — keep class="group" in markup instead */
+  @apply relative overflow-hidden rounded-lg bg-charcoal/50 backdrop-blur-sm border border-slate/20 transition-smooth;
 }
 
 .product-card:hover {
