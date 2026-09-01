@@ -23,7 +23,7 @@ const options = {
         if (!isValid) return null
         // Remove password before returning user
         // @ts-ignore
-        delete user.password
+        delete (user as any).password
         return user
       },
     }),
@@ -32,11 +32,13 @@ const options = {
 
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
   options.providers.push(
+    // @ts-ignore
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }) as any
+    })
   )
 }
 
-export default (req: any, res: any) => NextAuth(req, res, options)
+const handler = NextAuth(options as any)
+export { handler as GET, handler as POST }
