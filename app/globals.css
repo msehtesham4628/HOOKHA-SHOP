@@ -63,15 +63,24 @@ body {
 }
 
 .btn-primary {
-  @apply bg-gradient-to-r from-gold to-rose text-midnight hover:shadow-glow;
+  @apply bg-gradient-to-r from-gold to-rose text-midnight;
+}
+.btn-primary:hover {
+  @apply shadow-glow;
 }
 
 .btn-secondary {
-  @apply border border-gold text-gold hover:bg-gold/10;
+  @apply border border-gold text-gold;
+}
+.btn-secondary:hover {
+  @apply bg-gold/10;
 }
 
 .btn-ghost {
-  @apply text-white hover:bg-white/10;
+  @apply text-white;
+}
+.btn-ghost:hover {
+  @apply bg-white/10;
 }
 
 /* Inputs */
@@ -90,7 +99,10 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gold/60 rounded-full hover:bg-gold;
+  @apply bg-gold/60 rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gold;
 }
 
 /* Animations */
