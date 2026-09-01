@@ -50,11 +50,11 @@ body {
 
 /* Product Card */
 .product-card {
-  @apply group relative overflow-hidden rounded-lg bg-charcoal/50 backdrop-blur-sm border border-slate/20 transition-smooth hover:border-gold/50;
+  @apply group relative overflow-hidden rounded-lg bg-charcoal/50 backdrop-blur-sm border border-slate/20 transition-smooth;
 }
 
 .product-card:hover {
-  @apply shadow-luxury;
+  @apply border-gold/50 shadow-luxury;
 }
 
 /* Buttons */
