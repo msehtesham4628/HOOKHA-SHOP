@@ -1,5 +1,3 @@
-import fetch from 'node-fetch'
-
 const RESEND_ENDPOINT = 'https://api.resend.com/emails'
 
 export async function sendEmail(to: string, subject: string, html: string) {
