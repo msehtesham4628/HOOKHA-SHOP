@@ -1,4 +1,4 @@
-// This is your Prisma schema file,
+// This is your Prisma schema file for MongoDB
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
@@ -15,7 +15,7 @@ datasource db {
 // ============================================================================
 
 model User {
-  id            String    @id @default(cuid())
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
   email         String    @unique
   name          String?
   password      String? // For email/password auth
@@ -45,8 +45,8 @@ enum UserRole {
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
+  id                 String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId             String  @db.ObjectId
   type               String
   provider           String
   providerAccountId  String
@@ -64,14 +64,15 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(cuid())
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   sessionToken String   @unique
-  userId       String
+  userId       String   @db.ObjectId
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
   identifier String
   token      String   @unique
   expires    DateTime
@@ -84,14 +85,14 @@ model VerificationToken {
 // ============================================================================
 
 model Category {
-  id          String   @id @default(cuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String   @unique
   slug        String   @unique
   description String?
   image       String?
   icon        String?
-  parent      Category? @relation("CategoryHierarchy", fields: [parentId], references: [id])
-  parentId    String?
+  parent      Category? @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: Disconnect)
+  parentId    String?  @db.ObjectId
   children    Category[] @relation("CategoryHierarchy")
   products    Product[]
   order       Int      @default(0)
@@ -101,7 +102,7 @@ model Category {
 }
 
 model Brand {
-  id          String   @id @default(cuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String   @unique
   slug        String   @unique
   description String?
@@ -118,7 +119,7 @@ model Brand {
 // ============================================================================
 
 model Product {
-  id              String   @id @default(cuid())
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
   name            String
   slug            String   @unique
   sku             String   @unique
@@ -131,9 +132,9 @@ model Product {
   currency        String   @default("USD")
   
   // Relationships
-  brandId         String
+  brandId         String   @db.ObjectId
   brand           Brand    @relation(fields: [brandId], references: [id], onDelete: Restrict)
-  categoryId      String
+  categoryId      String   @db.ObjectId
   category        Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   
   // Product Details
@@ -184,8 +185,8 @@ enum ProductStatus {
 }
 
 model ProductImage {
-  id            String   @id @default(cuid())
-  productId     String
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId     String   @db.ObjectId
   product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   
   imageUrl      String   // CDN URL
@@ -204,8 +205,8 @@ model ProductImage {
 }
 
 model ProductVariant {
-  id          String   @id @default(cuid())
-  productId   String
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId   String   @db.ObjectId
   product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   
   name        String
@@ -222,8 +223,8 @@ model ProductVariant {
 }
 
 model Inventory {
-  id              String   @id @default(cuid())
-  productId       String   @unique
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId       String   @unique @db.ObjectId
   product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   
   totalStock      Int      @default(0)
@@ -243,10 +244,10 @@ model Inventory {
 // ============================================================================
 
 model Order {
-  id              String   @id @default(cuid())
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
   orderNumber     String   @unique
   
-  userId          String
+  userId          String   @db.ObjectId
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   items           OrderItem[]
@@ -259,20 +260,20 @@ model Order {
   total           Float
   
   // Coupon
-  couponId        String?
+  couponId        String?  @db.ObjectId
   coupon          Coupon?  @relation(fields: [couponId], references: [id])
   
   // Shipping
   shippingMethod  String?
-  shippingId      String?
+  shippingId      String?  @db.ObjectId
   shipping        Shipping? @relation(fields: [shippingId], references: [id])
   
   // Addresses
   billingAddress  Address?  @relation("BillingAddress", fields: [billingAddressId], references: [id])
-  billingAddressId String?
+  billingAddressId String?  @db.ObjectId
   
   shippingAddress Address?  @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
-  shippingAddressId String?
+  shippingAddressId String?  @db.ObjectId
   
   // Status
   status          OrderStatus @default(PENDING)
@@ -299,11 +300,11 @@ enum OrderStatus {
 }
 
 model OrderItem {
-  id              String   @id @default(cuid())
-  orderId         String
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderId         String   @db.ObjectId
   order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   
-  productId       String
+  productId       String   @db.ObjectId
   product         Product  @relation(fields: [productId], references: [id])
   
   quantity        Int
@@ -311,15 +312,15 @@ model OrderItem {
   subtotal        Float
   
   // Variant details if applicable
-  variantId       String?
+  variantId       String?  @db.ObjectId
   variantDetails  String? // JSON
   
   createdAt       DateTime @default(now())
 }
 
 model Payment {
-  id              String   @id @default(cuid())
-  orderId         String   @unique
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderId         String   @unique @db.ObjectId
   order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   
   amount          Float
@@ -356,7 +357,7 @@ enum PaymentStatus {
 }
 
 model Shipping {
-  id              String   @id @default(cuid())
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
   name            String
   description     String?
   
@@ -382,8 +383,8 @@ model Shipping {
 // ============================================================================
 
 model Address {
-  id              String   @id @default(cuid())
-  userId          String
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String   @db.ObjectId
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   firstName       String
@@ -419,11 +420,11 @@ enum AddressType {
 // ============================================================================
 
 model Review {
-  id              String   @id @default(cuid())
-  productId       String
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId       String   @db.ObjectId
   product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   
-  userId          String
+  userId          String   @db.ObjectId
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   rating          Int      // 1-5
@@ -452,11 +453,11 @@ enum ReviewStatus {
 // ============================================================================
 
 model Wishlist {
-  id              String   @id @default(cuid())
-  userId          String
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String   @db.ObjectId
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
-  productId       String
+  productId       String   @db.ObjectId
   product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   
   createdAt       DateTime @default(now())
@@ -469,7 +470,7 @@ model Wishlist {
 // ============================================================================
 
 model Coupon {
-  id              String   @id @default(cuid())
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
   code            String   @unique
   description     String?
   
@@ -509,8 +510,8 @@ enum CouponType {
 // ============================================================================
 
 model WholesaleCustomer {
-  id              String   @id @default(cuid())
-  userId          String   @unique
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String   @unique @db.ObjectId
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   businessName    String
@@ -539,7 +540,7 @@ enum WholesaleStatus {
 // ============================================================================
 
 model SiteSettings {
-  id              String   @id @default(cuid())
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
   
   siteName        String   @default("Hookah Shop")
   siteUrl         String
@@ -572,7 +573,7 @@ model SiteSettings {
 }
 
 model AuditLog {
-  id              String   @id @default(cuid())
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
   action          String
   entity          String
   entityId        String
