@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  @apply border-gray-800;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-midnight text-white;
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+}
+
+/* Glassmorphism */
+.glass {
+  @apply bg-white/10 backdrop-blur-md border border-white/20;
+}
+
+.glass-dark {
+  @apply bg-black/40 backdrop-blur-lg border border-white/10;
+}
+
+/* Gradient Text */
+.gradient-text {
+  @apply bg-gradient-to-r from-gold via-rose to-gold bg-clip-text text-transparent;
+}
+
+/* Glow Effect */
+.glow-effect {
+  @apply shadow-glow;
+}
+
+.glow-text {
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+}
+
+/* Smooth Transitions */
+.transition-smooth {
+  @apply transition-all duration-300 ease-out;
+}
+
+/* Skeleton Loading */
+.skeleton {
+  @apply animate-shimmer bg-gradient-to-r from-charcoal via-slate to-charcoal bg-[length:1000px_100%];
+}
+
+/* Product Card */
+.product-card {
+  @apply group relative overflow-hidden rounded-lg bg-charcoal/50 backdrop-blur-sm border border-slate/20 transition-smooth hover:border-gold/50;
+}
+
+.product-card:hover {
+  @apply shadow-luxury;
+}
+
+/* Buttons */
+.btn {
+  @apply px-6 py-3 rounded-lg font-semibold transition-smooth focus:outline-none focus:ring-2 focus:ring-gold/50;
+}
+
+.btn-primary {
+  @apply bg-gradient-to-r from-gold to-rose text-midnight hover:shadow-glow;
+}
+
+.btn-secondary {
+  @apply border border-gold text-gold hover:bg-gold/10;
+}
+
+.btn-ghost {
+  @apply text-white hover:bg-white/10;
+}
+
+/* Inputs */
+.input {
+  @apply w-full px-4 py-2 bg-charcoal border border-slate/30 rounded-lg text-white placeholder-gray-500 transition-smooth focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-charcoal;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gold/60 rounded-full hover:bg-gold;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.5s ease-out;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .glass {
+    @apply bg-white/5 backdrop-blur-sm;
+  }
+
+  body {
+    font-size: 16px;
+  }
+}
